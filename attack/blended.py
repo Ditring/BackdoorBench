@@ -87,3 +87,4 @@ if __name__ == '__main__':
     attack.prepare(args)
     attack.stage1_non_training_data_prepare()
     attack.stage2_training()
+    attack.savedataset(args.pic_save_root, args.dataset)

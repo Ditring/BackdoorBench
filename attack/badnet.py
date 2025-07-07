@@ -52,6 +52,9 @@ def add_common_attack_args(parser):
     parser.add_argument('--pratio', type=float,
                         help='the poison rate '
                         )
+    parser.add_argument('--pic_save_root', type=str,
+                        help='the poison rate '
+                        )
     return parser
 
 
@@ -403,8 +406,4 @@ if __name__ == '__main__':
     attack.prepare(args)
     attack.stage1_non_training_data_prepare()
     attack.stage2_training()
-    if hasattr(args, 'patch_mask_path') and args.patch_mask_path:
-        patch_base = os.path.splitext(os.path.basename(args.patch_mask_path))[0]
-        attack.savedataset(f"{args.attack}_{args.pratio}_{patch_base}", args.dataset)
-    else:
-        attack.savedataset(f"{args.attack}_{args.pratio}", args.dataset)
+    attack.savedataset(args.pic_save_root, args.dataset)
