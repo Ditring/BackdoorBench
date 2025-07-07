@@ -243,7 +243,7 @@ class BadNet(NormalCase):
         #保存攻击后，没有经过数据增强的数据集，准备保存到磁盘
         self.bd_train_dataset = bd_train_dataset
         self.bd_test_dataset = bd_test_dataset
-        self.cle_test_dataset = test_dataset_without_transform
+        self.cl_test_dataset = test_dataset_without_transform
         # blend-cifar时，这里是9000，说明肯定是去掉了那些本来标签就是原始标签的部分
         #print(len(self.bd_test_dataset.bd_data_container))
 
@@ -322,7 +322,7 @@ class BadNet(NormalCase):
     #保存
     def savedataset(self,type,dataset):
         from torchvision.transforms import ToPILImage
-        train_save_folder = f'../pic_datasets/{type}/{dataset}/trainSet'
+        train_save_folder = f'./pic_datasets/{type}/{dataset}/trainSet'
         os.makedirs(train_save_folder,exist_ok=True)
         label_file = open(os.path.join(train_save_folder,'labels.txt'),'w')
         poisoned_list_file = open(os.path.join(train_save_folder,'poisoned_list.txt'),'w')
@@ -351,7 +351,7 @@ class BadNet(NormalCase):
         #self.saveTestset(self,type,dataset,False)
 
 
-        test_save_folder = f'../pic_datasets/{type}/{dataset}/testSetPoisoned'
+        test_save_folder = f'./pic_datasets/{type}/{dataset}/testSetPoisoned'
         os.makedirs(test_save_folder,exist_ok=True)
         label_file = open(os.path.join(test_save_folder,'labels.txt'),'w')
         poisoned_list_file = open(os.path.join(test_save_folder,'poisoned_list.txt'),'w')
@@ -370,12 +370,12 @@ class BadNet(NormalCase):
         poisoned_list_file.close()
         clean_list_file.close()
 
-        test_save_folder = f'../pic_datasets/{type}/{dataset}/testSetClear'
+        test_save_folder = f'./pic_datasets/{type}/{dataset}/testSetClear'
         os.makedirs(test_save_folder,exist_ok=True)
         label_file = open(os.path.join(test_save_folder,'labels.txt'),'w')
         poisoned_list_file = open(os.path.join(test_save_folder,'poisoned_list.txt'),'w')
         i = 0
-        for img,origin_label in self.test_dataset_without_transform:
+        for img,origin_label in self.cl_test_dataset:
 
             image_path = os.path.join(test_save_folder, f'image_{i}.png')
             img.save(image_path)
@@ -403,4 +403,8 @@ if __name__ == '__main__':
     attack.prepare(args)
     attack.stage1_non_training_data_prepare()
     attack.stage2_training()
-    attack.savedataset('badnet','cifar10')
+    if hasattr(args, 'patch_mask_path') and args.patch_mask_path:
+        patch_base = os.path.splitext(os.path.basename(args.patch_mask_path))[0]
+        attack.savedataset(f"{args.attack}_{args.pratio}_{patch_base}", args.dataset)
+    else:
+        attack.savedataset(f"{args.attack}_{args.pratio}", args.dataset)
