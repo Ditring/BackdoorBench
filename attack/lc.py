@@ -188,6 +188,9 @@ class LabelConsistent(BadNet):
                               clean_test_dataset_with_transform, \
                               bd_train_dataset_with_transform, \
                               bd_test_dataset_with_transform
+        self.bd_train_dataset = bd_train_dataset
+        self.bd_test_dataset = bd_test_dataset
+        self.cl_test_dataset = test_dataset_without_transform
 
 
 if __name__ == '__main__':

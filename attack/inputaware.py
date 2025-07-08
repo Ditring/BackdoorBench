@@ -347,6 +347,7 @@ class InputAware(BadNet):
                               clean_test_dataset_with_transform, \
                               clean_test_dataloader1, \
                               clean_test_dataloader2
+        self.cl_test_dataset = test_dataset_without_transform
 
     def stage2_training(self):
         # since we need the network to do poison, 
@@ -684,6 +685,9 @@ class InputAware(BadNet):
             bd_test=self.bd_test_dataset,
             save_path=args.save_path,
         )
+        self.bd_train_dataset = bd_train_dataset
+        self.bd_test_dataset = self.bd_test_dataset
+
 
     def train_mask_step(self, netM, optimizerM, schedulerM, train_dataloader1, train_dataloader2, args):
         netM.train()

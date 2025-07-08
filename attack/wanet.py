@@ -194,6 +194,7 @@ class Wanet(BadNet):
                               clean_train_dataloader, \
                               clean_test_dataset_with_transform, \
                               clean_test_dataloader
+        self.cl_test_dataset = test_dataset_without_transform
 
     def stage2_training(self):
         logging.info(f"stage2 start")
@@ -550,6 +551,8 @@ class Wanet(BadNet):
             bd_test=self.bd_test_dataset,
             save_path=args.save_path,
         )
+        self.bd_train_dataset = bd_train_dataset
+        self.bd_test_dataset = self.bd_test_dataset
 
     def train_step(self, netC, optimizerC, schedulerC, train_dataloader, noise_grid, identity_grid, epoch, args):
         logging.info(" Train:")
